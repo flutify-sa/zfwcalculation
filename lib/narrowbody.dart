@@ -85,91 +85,118 @@ class NarrowBodyState extends State<NarrowBody> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              // DOW field wrapped in SizedBox
-              SizedBox(
-                width: 250, // Set desired width here
-                child: TextField(
-                  controller: _dowController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Enter DOW (Dry Operating Weight)',
-                    border: OutlineInputBorder(),
+              // DOW field wrapped in Card
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    controller: _dowController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Enter DOW (Dry Operating Weight)',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      _calculateWeights(); // Update calculations when DOW changes
+                    },
                   ),
-                  onChanged: (value) {
-                    _calculateWeights(); // Update calculations when DOW changes
-                  },
                 ),
               ),
               SizedBox(height: 16),
-              // Pax field wrapped in SizedBox
-              SizedBox(
-                width: 250, // Set desired width here
-                child: TextField(
-                  controller: _paxController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Enter Number of Pax',
-                    border: OutlineInputBorder(),
+              // Pax field wrapped in Card
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: _paxController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Enter Number of Pax',
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          _calculateWeights(); // Update calculations when Pax changes
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                          'Total Pax Weight: ${paxWeight.toStringAsFixed(0)} kg'),
+                      SizedBox(height: 16),
+                      Text('Total Bag Pcs: $totalBags'),
+                      SizedBox(height: 16),
+                      Text(
+                          'Total Bag Weight: ${bagsWeight.toStringAsFixed(0)} kg'),
+                    ],
                   ),
-                  onChanged: (value) {
-                    _calculateWeights(); // Update calculations when Pax changes
-                  },
                 ),
               ),
               SizedBox(height: 16),
-              // Total Pax weight field
-              Text('Total Pax Weight: ${paxWeight.toStringAsFixed(0)} kg'),
-              SizedBox(height: 16),
-              // Total Bags field (Rounded up number of bags)
-              Text('Total Bag Pcs: $totalBags'),
-              SizedBox(height: 16),
-              // Total Bags weight field
-              Text('Total Bag Weight: ${bagsWeight.toStringAsFixed(0)} kg'),
-              SizedBox(height: 16),
-              // Cargo weight field wrapped in SizedBox
-              SizedBox(
-                width: 250, // Set desired width here
-                child: TextField(
-                  controller: _cargoController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Enter Cargo Weight (kg)',
-                    border: OutlineInputBorder(),
+              // Cargo weight field wrapped in Card
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    controller: _cargoController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Enter Cargo Weight (kg)',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      _calculateWeights(); // Update calculations when Cargo changes
+                    },
                   ),
-                  onChanged: (value) {
-                    _calculateWeights(); // Update calculations when Cargo changes
-                  },
                 ),
               ),
-              SizedBox(height: 16),
-              // Service weight field wrapped in SizedBox
-              SizedBox(
-                width: 250, // Set desired width here
-                child: TextField(
-                  controller: _serviceWeightController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Enter Service Weight (kg)',
-                    border: OutlineInputBorder(),
+              SizedBox(height: 10),
+              // Service weight field wrapped in Card
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    controller: _serviceWeightController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Enter Service Weight (kg)',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      _calculateWeights(); // Update calculations when Service Weight changes
+                    },
                   ),
-                  onChanged: (value) {
-                    _calculateWeights(); // Update calculations when Service Weight changes
-                  },
                 ),
               ),
               SizedBox(height: 20),
-              // Total Payload field
-              Text(
-                'Traffic Load: ${totalTrafficload.toStringAsFixed(0)} kg',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              // Total Payload field wrapped in Card
+              // Total Payload field wrapped in Card
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    // Center the content horizontally
+                    child: Column(
+                      mainAxisSize: MainAxisSize
+                          .min, // Use min size to avoid unnecessary space
+                      children: [
+                        Text(
+                          'Traffic Load: ${totalTrafficload.toStringAsFixed(0)} kg',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'EZFW : ${zfw.toStringAsFixed(0)} kg',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              SizedBox(height: 20),
-              // ZFW field
-              Text(
-                'EZFW : ${zfw.toStringAsFixed(0)} kg',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               // Clear button with black background and white text
               Center(
                 child: ElevatedButton(
