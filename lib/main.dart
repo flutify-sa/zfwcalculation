@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zfwcalc/entryscreen.dart';
 import 'package:provider/provider.dart';
 import 'package:zfwcalc/toggleselector.dart';
+import 'package:zfwcalc/welcomescreen.dart';
 
 void main() {
   runApp(
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: const EntryScreen(),
+      home: const WelcomeScreen(),
     );
   }
 }
