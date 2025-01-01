@@ -50,7 +50,7 @@ class _EntryScreenState extends State<EntryScreen> {
               ),
               const SizedBox(height: 10),
 
-              // Card for Flight Number and Registration
+              // Combined Card for Flight Number, Registration, Origin, Date, and STD
               Card(
                 elevation: 4.0,
                 shape: RoundedRectangleBorder(
@@ -58,149 +58,121 @@ class _EntryScreenState extends State<EntryScreen> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Row(
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _flightnumber,
-                          inputFormatters: [
-                            UpperCaseTextFormatter(),
-                          ],
-                          decoration: InputDecoration(
-                            labelText: 'Flt No.',
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: TextField(
-                          controller: _registration,
-                          inputFormatters: [
-                            UpperCaseTextFormatter(),
-                          ],
-                          decoration: InputDecoration(
-                            labelText: 'Reg.',
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-
-              // Card for Origin and Date
-              Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: TextField(
-                            controller: _origin,
-                            inputFormatters: [
-                              UpperCaseTextFormatter(),
-                            ],
-                            decoration: InputDecoration(
-                              labelText: 'Orig.',
-                              border: OutlineInputBorder(),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _flightnumber,
+                              inputFormatters: [
+                                UpperCaseTextFormatter(),
+                              ],
+                              decoration: InputDecoration(
+                                labelText: 'Flt No.',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: TextField(
-                            controller: _depdate,
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              labelText: 'Date',
-                              border: OutlineInputBorder(),
-                              suffixIcon: Icon(Icons.calendar_today),
-                            ),
-                            onTap: () async {
-                              DateTime? selectedDate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime(2101),
-                              );
-                              if (selectedDate != null) {
-                                _depdate.text = "${selectedDate.toLocal()}"
-                                    .split(' ')[0]; // Format as YYYY-MM-DD
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-
-              // Card for STD and Time
-              Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: TextField(
-                            controller: _std,
-                            readOnly: true, // Prevent manual typing
-                            decoration: InputDecoration(
-                              labelText: 'STD',
-                              border: OutlineInputBorder(),
-                              suffixIcon: Icon(Icons.access_time),
-                            ),
-                            onTap: () async {
-                              TimeOfDay? selectedTime = await showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay.now(),
-                              );
-                              if (selectedTime != null) {
-                                final time24HourFormat =
-                                    '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
-                                _std.text = time24HourFormat;
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.purple,
-                            borderRadius: BorderRadius.circular(8.0),
-                            border: Border.all(color: Colors.black),
-                          ),
-                          height: 50.0,
-                          child: Center(
-                            child: Text(
-                              'Time: Zulu',
-                              style: TextStyle(color: Colors.white),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: TextField(
+                              controller: _registration,
+                              inputFormatters: [
+                                UpperCaseTextFormatter(),
+                              ],
+                              decoration: InputDecoration(
+                                labelText: 'Reg.',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _origin,
+                              inputFormatters: [
+                                UpperCaseTextFormatter(),
+                              ],
+                              decoration: InputDecoration(
+                                labelText: 'Orig.',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: TextField(
+                              controller: _depdate,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                labelText: 'Date',
+                                border: OutlineInputBorder(),
+                                suffixIcon: Icon(Icons.calendar_today),
+                              ),
+                              onTap: () async {
+                                DateTime? selectedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime(2101),
+                                );
+                                if (selectedDate != null) {
+                                  _depdate.text = "${selectedDate.toLocal()}"
+                                      .split(' ')[0]; // Format as YYYY-MM-DD
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _std,
+                              readOnly: true, // Prevent manual typing
+                              decoration: InputDecoration(
+                                labelText: 'STD',
+                                border: OutlineInputBorder(),
+                                suffixIcon: Icon(Icons.access_time),
+                              ),
+                              onTap: () async {
+                                TimeOfDay? selectedTime = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay.now(),
+                                );
+                                if (selectedTime != null) {
+                                  final time24HourFormat =
+                                      '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
+                                  _std.text = time24HourFormat;
+                                }
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.purple,
+                                borderRadius: BorderRadius.circular(8.0),
+                                border: Border.all(color: Colors.black),
+                              ),
+                              height: 50.0,
+                              child: Center(
+                                child: Text(
+                                  'Time: Zulu',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -208,7 +180,7 @@ class _EntryScreenState extends State<EntryScreen> {
               ),
               SizedBox(height: 16),
 
-              // Card for Radio Buttons
+              // Card for Radio Buttons and Continue Button
               Card(
                 elevation: 4.0,
                 shape: RoundedRectangleBorder(
@@ -223,60 +195,64 @@ class _EntryScreenState extends State<EntryScreen> {
                     borderRadius: BorderRadius.circular(12.0), // Border radius
                   ),
                   padding: EdgeInsets.all(16.0), // Padding inside the container
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: Column(
                     children: [
-                      Radio<String>(
-                        value: 'Wide Body',
-                        groupValue: selectedBodyType,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedBodyType = value;
-                          });
-                        },
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Radio<String>(
+                            value: 'Wide Body',
+                            groupValue: selectedBodyType,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedBodyType = value;
+                              });
+                            },
+                          ),
+                          Text('Wide Body'),
+                          Radio<String>(
+                            value: 'Narrow Body',
+                            groupValue: selectedBodyType,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedBodyType = value;
+                              });
+                            },
+                          ),
+                          Text('Narrow Body'),
+                        ],
                       ),
-                      Text('Wide Body'),
-                      Radio<String>(
-                        value: 'Narrow Body',
-                        groupValue: selectedBodyType,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedBodyType = value;
-                          });
+                      SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (selectedBodyType == 'Wide Body') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => WideBody()),
+                            );
+                          } else if (selectedBodyType == 'Narrow Body') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NarrowBody()),
+                            );
+                          }
                         },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.purple, // Text color
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 16.0, horizontal: 32.0),
+                        ),
+                        child: Text('Continue'),
                       ),
-                      Text('Narrow Body'),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(height: 16),
-
-              // Elevated Button
-              ElevatedButton(
-                onPressed: () {
-                  if (selectedBodyType == 'Wide Body') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => WideBody()),
-                    );
-                  } else if (selectedBodyType == 'Narrow Body') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => NarrowBody()),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.purple, // Text color
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0), // Border radius
-                  ),
-                  padding: EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 32.0), // Padding
-                ),
-                child: Text('Continue'),
               ),
             ],
           ),

@@ -76,7 +76,7 @@ class WideBodyState extends State<WideBody> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Narrow Body'),
+        title: Text('Wide Body'),
         centerTitle: true,
       ),
       body: Padding(

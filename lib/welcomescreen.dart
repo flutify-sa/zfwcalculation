@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'entryscreen.dart'; // Make sure to import your EntryScreen
+import 'entryscreen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -7,30 +7,48 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GestureDetector(
-        onHorizontalDragEnd: (details) {
-          // Check if the swipe was to the left
-          if (details.velocity.pixelsPerSecond.dx < 0) {
-            // Navigate to EntryScreen
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => EntryScreen()),
-            );
-          }
-        },
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/zfw.png'), // Load your image
-              const SizedBox(
-                  height: 20), // Add some space between image and text
-              const Text(
-                'Swipe to enter',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      backgroundColor: Colors.purple.shade50,
+      // Set your desired background color here
+
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'ZFW Calculation',
+              style: TextStyle(fontSize: 24),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Image.asset(
+              'assets/zfw.png',
+              width: 300,
+              height: 300,
+              fit: BoxFit.cover,
+            ),
+            const SizedBox(height: 50),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EntryScreen()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.purple, // Text color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0), // Border radius
+                ),
+                padding: EdgeInsets.symmetric(
+                  vertical: 16.0,
+                  horizontal: 32.0,
+                ), // Padding
               ),
-            ],
-          ),
+              child: const Text('Continue'), // Only one child property
+            ),
+          ],
         ),
       ),
     );
