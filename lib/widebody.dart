@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zfwcalc/uppercasetransform.dart';
 
 class WideBody extends StatefulWidget {
   const WideBody({super.key});
@@ -14,6 +14,12 @@ class WideBodyState extends State<WideBody> {
   final _cargoController = TextEditingController();
   final _serviceWeightController = TextEditingController();
   final _remarks = TextEditingController();
+
+  final _flightnumber = TextEditingController();
+  final _registration = TextEditingController();
+  final _depdate = TextEditingController();
+  final _origin = TextEditingController();
+  final _std = TextEditingController();
 
   double paxWeight = 0.0;
   double bagsWeight = 0.0;
@@ -31,28 +37,6 @@ class WideBodyState extends State<WideBody> {
   static const double bagsPerPax = 1.3;
   static const double tareWeightPerULD = 84.0;
   static const int bagsPerULD = 37;
-
-  // Load saved data from SharedPreferences
-  Future<void> _loadData() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _dowController.text = prefs.getString('dow') ?? '';
-      _paxController.text = prefs.getString('pax') ?? '';
-      _cargoController.text = prefs.getString('cargo') ?? '';
-      _serviceWeightController.text = prefs.getString('serviceWeight') ?? '';
-      _remarks.text = prefs.getString('remarks') ?? '';
-    });
-  }
-
-  // Save data to SharedPreferences
-  Future<void> _saveData() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('dow', _dowController.text);
-    prefs.setString('pax', _paxController.text);
-    prefs.setString('cargo', _cargoController.text);
-    prefs.setString('serviceWeight', _serviceWeightController.text);
-    prefs.setString('remarks', _remarks.text);
-  }
 
   void _calculateWeights() {
     final paxCount = int.tryParse(_paxController.text) ?? 0;
@@ -76,8 +60,6 @@ class WideBodyState extends State<WideBody> {
       serviceWeight = service;
       dow = dowInput;
     });
-
-    _saveData(); // Save data when calculations are done
   }
 
   void _clearFields() {
@@ -98,13 +80,6 @@ class WideBodyState extends State<WideBody> {
       totalULDs = 0;
       totalTareWeight = 0.0;
     });
-    _saveData(); // Save empty data after clearing fields
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadData(); // Load saved data when the widget is initialized
   }
 
   @override
@@ -125,11 +100,132 @@ class WideBodyState extends State<WideBody> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _flightnumber,
+                              decoration: InputDecoration(
+                                labelText: 'Flt No.',
+                                border: OutlineInputBorder(),
+                              ),
+                              inputFormatters: [
+                                UpperCaseTextFormatter(),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: TextField(
+                              controller: _registration,
+                              decoration: InputDecoration(
+                                labelText: 'Reg.',
+                                border: OutlineInputBorder(),
+                              ),
+                              inputFormatters: [
+                                UpperCaseTextFormatter(),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _origin,
+                              decoration: InputDecoration(
+                                labelText: 'Orig.',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: TextField(
+                              controller: _depdate,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                labelText: 'Date',
+                                border: OutlineInputBorder(),
+                                suffixIcon: Icon(Icons.calendar_today),
+                              ),
+                              onTap: () async {
+                                DateTime? selectedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime(2101),
+                                );
+                                if (selectedDate != null) {
+                                  _depdate.text =
+                                      "${selectedDate.toLocal()}".split(' ')[0];
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _std,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                labelText: 'STD',
+                                border: OutlineInputBorder(),
+                                suffixIcon: Icon(Icons.access_time),
+                              ),
+                              onTap: () async {
+                                TimeOfDay? selectedTime = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay.now(),
+                                );
+                                if (selectedTime != null) {
+                                  final time24HourFormat =
+                                      '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
+                                  _std.text = time24HourFormat;
+                                }
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.purple,
+                                borderRadius: BorderRadius.circular(8.0),
+                                border: Border.all(color: Colors.black),
+                              ),
+                              height: 50.0,
+                              child: Center(
+                                child: Text(
+                                  'Time: Zulu',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
                       TextField(
                         controller: _dowController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          labelText: 'Enter DOW ',
+                          labelText: 'Enter DOW',
                           border: OutlineInputBorder(),
                         ),
                         onChanged: (value) {
@@ -221,12 +317,27 @@ class WideBodyState extends State<WideBody> {
                           counterText: '',
                         ),
                       ),
-                      SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _clearFields,
-                        child: Text('Clear Fields'),
-                      ),
                     ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _clearFields,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.black),
+                    padding: WidgetStateProperty.all(
+                        EdgeInsets.symmetric(vertical: 12, horizontal: 20)),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    'Clear All Fields',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
