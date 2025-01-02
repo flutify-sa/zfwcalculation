@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zfwcalc/narrowbody.dart';
-import 'package:zfwcalc/widebody.dart'; // Make sure to import the WideBody page
+import 'package:zfwcalc/widebody.dart';
 import 'package:zfwcalc/uppercasetransform.dart';
 
 class EntryScreen extends StatefulWidget {
@@ -22,6 +23,36 @@ class _EntryScreenState extends State<EntryScreen> {
   String? selectedBodyType;
 
   @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  // Load data from SharedPreferences
+  Future<void> _loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _flightnumber.text = prefs.getString('flightnumber') ?? '';
+      _registration.text = prefs.getString('registration') ?? '';
+      _depdate.text = prefs.getString('depdate') ?? '';
+      _origin.text = prefs.getString('origin') ?? '';
+      _std.text = prefs.getString('std') ?? '';
+      selectedBodyType = prefs.getString('bodyType');
+    });
+  }
+
+  // Save data to SharedPreferences
+  Future<void> _saveData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('flightnumber', _flightnumber.text);
+    prefs.setString('registration', _registration.text);
+    prefs.setString('depdate', _depdate.text);
+    prefs.setString('origin', _origin.text);
+    prefs.setString('std', _std.text);
+    prefs.setString('bodyType', selectedBodyType ?? '');
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
@@ -35,22 +66,20 @@ class _EntryScreenState extends State<EntryScreen> {
           child: Column(
             children: [
               Card(
-                elevation: 4.0, // Shadow effect
+                elevation: 4.0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0), // Border radius
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(16.0), // Padding around the text
+                  padding: EdgeInsets.all(16.0),
                   child: Text(
                     'Welcome to the ZFW calculation App.',
-                    style: TextStyle(fontSize: 14.0), // Customize text style
-                    textAlign: TextAlign.center, // Center align the text
+                    style: TextStyle(fontSize: 14.0),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
               const SizedBox(height: 10),
-
-              // Combined Card for Flight Number, Registration, Origin, Date, and STD
               Card(
                 elevation: 4.0,
                 shape: RoundedRectangleBorder(
@@ -122,8 +151,8 @@ class _EntryScreenState extends State<EntryScreen> {
                                   lastDate: DateTime(2101),
                                 );
                                 if (selectedDate != null) {
-                                  _depdate.text = "${selectedDate.toLocal()}"
-                                      .split(' ')[0]; // Format as YYYY-MM-DD
+                                  _depdate.text =
+                                      "${selectedDate.toLocal()}".split(' ')[0];
                                 }
                               },
                             ),
@@ -136,7 +165,7 @@ class _EntryScreenState extends State<EntryScreen> {
                           Expanded(
                             child: TextField(
                               controller: _std,
-                              readOnly: true, // Prevent manual typing
+                              readOnly: true,
                               decoration: InputDecoration(
                                 labelText: 'STD',
                                 border: OutlineInputBorder(),
@@ -179,8 +208,6 @@ class _EntryScreenState extends State<EntryScreen> {
                 ),
               ),
               SizedBox(height: 16),
-
-              // Card for Radio Buttons and Continue Button
               Card(
                 elevation: 4.0,
                 shape: RoundedRectangleBorder(
@@ -188,13 +215,11 @@ class _EntryScreenState extends State<EntryScreen> {
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white, // Background color
-                    border: Border.all(
-                        color: Colors.purple,
-                        width: 2), // Border color and width
-                    borderRadius: BorderRadius.circular(12.0), // Border radius
+                    color: Colors.white,
+                    border: Border.all(color: Colors.purple, width: 2),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
-                  padding: EdgeInsets.all(16.0), // Padding inside the container
+                  padding: EdgeInsets.all(16.0),
                   child: Column(
                     children: [
                       Row(
@@ -225,6 +250,7 @@ class _EntryScreenState extends State<EntryScreen> {
                       SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {
+                          _saveData(); // Save data before navigation
                           if (selectedBodyType == 'Wide Body') {
                             Navigator.push(
                               context,
@@ -241,7 +267,7 @@ class _EntryScreenState extends State<EntryScreen> {
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
-                          backgroundColor: Colors.purple, // Text color
+                          backgroundColor: Colors.purple,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),

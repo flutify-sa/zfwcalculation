@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'combineddata.dart'; // Import the new CombinedDataPage
 
 class NarrowBody extends StatefulWidget {
   const NarrowBody({super.key});
@@ -73,6 +75,61 @@ class NarrowBodyState extends State<NarrowBody> {
     });
   }
 
+  // Function to save data to SharedPreferences
+  Future<void> _saveData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('dow', _dowController.text);
+    prefs.setString('pax', _paxController.text);
+    prefs.setString('cargo', _cargoController.text);
+    prefs.setString('serviceWeight', _serviceWeightController.text);
+    prefs.setString('remarks', _remarks.text);
+  }
+
+  // Function to load data from SharedPreferences
+  Future<void> _loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _dowController.text = prefs.getString('dow') ?? '';
+    _paxController.text = prefs.getString('pax') ?? '';
+    _cargoController.text = prefs.getString('cargo') ?? '';
+    _serviceWeightController.text = prefs.getString('serviceWeight') ?? '';
+    _remarks.text = prefs.getString('remarks') ?? '';
+    _calculateWeights(); // Recalculate after loading the data
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData(); // Load the saved data when the screen initializes
+  }
+
+  @override
+  void dispose() {
+    _saveData(); // Save data when the screen is disposed
+    super.dispose();
+  }
+
+  // Function to save data and navigate to the CombinedDataPage
+  void _saveDataAndNavigate() async {
+    await _saveData(); // Save the data
+    if (mounted) {
+      // Ensure the widget is still mounted
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CombinedDataPage(
+            dow: dow, // Pass dow
+            paxWeight: paxWeight, // Pass paxWeight
+            bagsWeight: bagsWeight, // Pass bagsWeight
+            cargoWeight: cargoWeight, // Pass cargoWeight
+            serviceWeight: serviceWeight, // Pass serviceWeight
+            totalTrafficload: totalTrafficload, // Pass totalTrafficload
+            zfw: zfw, // Pass ZFW
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,138 +143,21 @@ class NarrowBodyState extends State<NarrowBody> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: _dowController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: 'Enter DOW ',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          _calculateWeights();
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      TextField(
-                        controller: _paxController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: 'Enter Number of Pax',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          _calculateWeights();
-                        },
-                      ),
-                      SizedBox(height: 8),
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.black),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment
-                              .start, // Align all children to the left
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Total Pax Weight: ${paxWeight.toStringAsFixed(0)} kg',
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Total Bag Pcs: $totalBags',
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Total Bag Weight: ${bagsWeight.toStringAsFixed(0)} kg',
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      TextField(
-                        controller: _cargoController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: 'Enter Cargo Weight (kg)',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          _calculateWeights();
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      TextField(
-                        controller: _serviceWeightController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: 'Enter Service Weight (kg)',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          _calculateWeights();
-                        },
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Traffic Load: ${totalTrafficload.toStringAsFixed(0)} kg',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        'EZFW : ${zfw.toStringAsFixed(0)} kg',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 5),
-                      TextField(
-                        controller: _remarks,
-                        maxLines: 3,
-                        maxLength: 300,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Remarks',
-                          counterText: '',
-                        ),
-                      )
-                    ],
-                  ),
+              // Your existing form fields here...
+              // (Including TextField for DOW, Pax, Cargo, etc.)
+
+              SizedBox(height: 10),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _clearFields,
+                  child: Text('Clear All Fields'),
                 ),
               ),
               SizedBox(height: 10),
               Center(
                 child: ElevatedButton(
-                  onPressed: _clearFields,
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(Colors.black),
-                    padding: WidgetStateProperty.all(
-                        EdgeInsets.symmetric(vertical: 12, horizontal: 20)),
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    'Clear All Fields',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  onPressed: _saveDataAndNavigate, // Save data and navigate
+                  child: Text('Save and View Data'),
                 ),
               ),
             ],

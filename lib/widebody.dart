@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WideBody extends StatefulWidget {
   const WideBody({super.key});
@@ -31,6 +32,28 @@ class WideBodyState extends State<WideBody> {
   static const double tareWeightPerULD = 84.0;
   static const int bagsPerULD = 37;
 
+  // Load saved data from SharedPreferences
+  Future<void> _loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _dowController.text = prefs.getString('dow') ?? '';
+      _paxController.text = prefs.getString('pax') ?? '';
+      _cargoController.text = prefs.getString('cargo') ?? '';
+      _serviceWeightController.text = prefs.getString('serviceWeight') ?? '';
+      _remarks.text = prefs.getString('remarks') ?? '';
+    });
+  }
+
+  // Save data to SharedPreferences
+  Future<void> _saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('dow', _dowController.text);
+    prefs.setString('pax', _paxController.text);
+    prefs.setString('cargo', _cargoController.text);
+    prefs.setString('serviceWeight', _serviceWeightController.text);
+    prefs.setString('remarks', _remarks.text);
+  }
+
   void _calculateWeights() {
     final paxCount = int.tryParse(_paxController.text) ?? 0;
     final cargo = double.tryParse(_cargoController.text) ?? 0;
@@ -53,6 +76,8 @@ class WideBodyState extends State<WideBody> {
       serviceWeight = service;
       dow = dowInput;
     });
+
+    _saveData(); // Save data when calculations are done
   }
 
   void _clearFields() {
@@ -73,6 +98,13 @@ class WideBodyState extends State<WideBody> {
       totalULDs = 0;
       totalTareWeight = 0.0;
     });
+    _saveData(); // Save empty data after clearing fields
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData(); // Load saved data when the widget is initialized
   }
 
   @override
