@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zfwcalc/uppercasetransform.dart';
+import 'package:zfwcalc/widebodypreview.dart';
 
 class WideBody extends StatefulWidget {
   const WideBody({super.key});
@@ -337,6 +338,49 @@ class WideBodyState extends State<WideBody> {
                   ),
                   child: Text(
                     'Clear All Fields',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Navigate to WideBodyPreview screen and pass the data
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WideBodyPreview(
+                          flightNumber: _flightnumber.text,
+                          registration: _registration.text,
+                          origin: _origin.text,
+                          depDate: _depdate.text,
+                          std: _std.text,
+                          paxWeight: paxWeight,
+                          bagsWeight: bagsWeight,
+                          cargoWeight: cargoWeight,
+                          serviceWeight: serviceWeight,
+                          trafficLoad:
+                              totalTrafficload, // Corrected variable name
+                          dow: dow,
+                          zfw: zfw,
+                          remarks: _remarks.text,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.black),
+                    padding: WidgetStateProperty.all(
+                        EdgeInsets.symmetric(vertical: 12, horizontal: 20)),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    'Preview Data',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
