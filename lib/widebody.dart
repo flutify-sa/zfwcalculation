@@ -136,6 +136,9 @@ class WideBodyState extends State<WideBody> {
                           Expanded(
                             child: TextField(
                               controller: _origin,
+                              inputFormatters: [
+                                UpperCaseTextFormatter(),
+                              ],
                               decoration: InputDecoration(
                                 labelText: 'Orig.',
                                 border: OutlineInputBorder(),
@@ -359,9 +362,9 @@ class WideBodyState extends State<WideBody> {
                           paxWeight: paxWeight,
                           bagsWeight: bagsWeight,
                           cargoWeight: cargoWeight,
+                          totalTareWeight: totalTareWeight,
                           serviceWeight: serviceWeight,
-                          trafficLoad:
-                              totalTrafficload, // Corrected variable name
+                          trafficLoad: totalTrafficload,
                           dow: dow,
                           zfw: zfw,
                           remarks: _remarks.text,

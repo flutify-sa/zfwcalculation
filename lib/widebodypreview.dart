@@ -10,6 +10,7 @@ class WideBodyPreview extends StatelessWidget {
   final double bagsWeight;
   final double cargoWeight;
   final double serviceWeight;
+  final double totalTareWeight;
   final double trafficLoad;
   final double zfw;
   final double dow; // Add this line
@@ -26,6 +27,7 @@ class WideBodyPreview extends StatelessWidget {
     required this.bagsWeight,
     required this.cargoWeight,
     required this.serviceWeight,
+    required this.totalTareWeight,
     required this.trafficLoad,
     required this.zfw,
     required this.dow, // Include dow in the constructor
@@ -55,6 +57,8 @@ class WideBodyPreview extends StatelessWidget {
             Text('Total Bag Weight: ${bagsWeight.toStringAsFixed(0)} kg'),
             Text('Cargo Weight: ${cargoWeight.toStringAsFixed(0)} kg'),
             Text('Service Weight: ${serviceWeight.toStringAsFixed(0)} kg'),
+            Text('Total tare Weight: ${totalTareWeight.toStringAsFixed(0)} kg'),
+
             Divider(),
 
             Text(
