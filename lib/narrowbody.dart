@@ -12,6 +12,7 @@ class NarrowBodyState extends State<NarrowBody> {
   final _paxController = TextEditingController();
   final _cargoController = TextEditingController();
   final _serviceWeightController = TextEditingController();
+  final _remarks = TextEditingController();
   double paxWeight = 0.0;
   double bagsWeight = 0.0;
   double cargoWeight = 0.0;
@@ -37,7 +38,7 @@ class NarrowBodyState extends State<NarrowBody> {
 
     // Calculate total number of bags (round up)
     totalBags =
-        (paxCount * bagsPerPax).ceil(); // Rounding up the number of bags
+        (paxCount * bagsPerPax).toInt(); // Rounding up the number of bags
     bagsWeight = totalBags * bagUnitWeight;
 
     // Total Payload
@@ -184,6 +185,17 @@ class NarrowBodyState extends State<NarrowBody> {
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
+                      SizedBox(height: 5),
+                      TextField(
+                        controller: _remarks,
+                        maxLines: 3,
+                        maxLength: 300,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Remarks',
+                          counterText: '',
+                        ),
+                      )
                     ],
                   ),
                 ),
